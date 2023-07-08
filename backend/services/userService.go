@@ -1,8 +1,8 @@
 package services
 
 import (
-	"github.com/RyukiKuwahara/Bio-Map/models"
-	"github.com/RyukiKuwahara/Bio-Map/repositories"
+	"github.com/RyukiKuwahara/Bio-Map/backend/models"
+	"github.com/RyukiKuwahara/Bio-Map/backend/repositories"
 )
 
 // CreateUser creates a new user

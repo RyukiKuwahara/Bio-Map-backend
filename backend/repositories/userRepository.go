@@ -1,7 +1,7 @@
 package repositories
 
 import (
-	"github.com/RyukiKuwahara/Bio-Map/models"
+	"github.com/RyukiKuwahara/Bio-Map/backend/models"
 )
 
 // SaveUser saves a user in the database
