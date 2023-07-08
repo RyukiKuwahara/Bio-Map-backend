@@ -2,18 +2,15 @@ package main
 
 import (
 	"log"
+	"net/http"
 
 	"github.com/RyukiKuwahara/Bio-Map/backend/handlers"
-
-	"github.com/gin-gonic/gin"
 )
 
 func main() {
-	router := gin.Default()
+	http.HandleFunc("/users", handlers.CreateUserHandler)
 
-	router.POST("/users", handlers.CreateUserHandler)
-
-	err := router.Run(":8080")
+	err := http.ListenAndServe(":8080", nil)
 	if err != nil {
 		log.Fatal("Server failed to start: ", err)
 	}
