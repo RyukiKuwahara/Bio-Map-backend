@@ -1,4 +1,4 @@
-module github.com/RyukiKuwahara/Bio-Map
+module github.com/RyukiKuwahara/Bio-Map/backend
 
 go 1.18
 
