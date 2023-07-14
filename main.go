@@ -4,7 +4,7 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/RyukiKuwahara/Bio-Map/backend/handlers"
+	"github.com/RyukiKuwahara/Bio-Map/handlers"
 )
 
 func main() {

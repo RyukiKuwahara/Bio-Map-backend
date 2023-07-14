@@ -5,7 +5,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/RyukiKuwahara/Bio-Map/backend/models"
+	"github.com/RyukiKuwahara/Bio-Map/models"
 	"github.com/joho/godotenv"
 	_ "github.com/lib/pq" // PostgreSQL driver
 )

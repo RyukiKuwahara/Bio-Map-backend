@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/RyukiKuwahara/Bio-Map/backend/models"
-	"github.com/RyukiKuwahara/Bio-Map/backend/services"
+	"github.com/RyukiKuwahara/Bio-Map/models"
+	"github.com/RyukiKuwahara/Bio-Map/services"
 )
 
 // CreateUserHandler handles the user registration endpoint
