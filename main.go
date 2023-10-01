@@ -8,8 +8,14 @@ import (
 	"github.com/RyukiKuwahara/Bio-Map/handlers"
 )
 
+func homePage(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintf(w, "Not Found!")
+	fmt.Println("accuses /")
+}
+
 func main() {
 	fmt.Println("starting main")
+	http.HandleFunc("/", homePage)
 	http.HandleFunc("/users", handlers.CreateUserHandler)
 
 	// cors := func(h http.Handler) http.Handler {
