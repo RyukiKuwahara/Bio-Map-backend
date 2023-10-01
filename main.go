@@ -9,6 +9,7 @@ import (
 )
 
 func main() {
+	fmt.Println("starting main")
 	http.HandleFunc("/users", handlers.CreateUserHandler)
 
 	// cors := func(h http.Handler) http.Handler {
