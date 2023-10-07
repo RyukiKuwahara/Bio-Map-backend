@@ -1,6 +1,7 @@
 package services
 
 import (
+	"fmt"
 	"log"
 
 	"github.com/RyukiKuwahara/Bio-Map/models"
@@ -8,13 +9,14 @@ import (
 )
 
 // CreateUser creates a new user
-func CreateUser(newUser models.SignupUser) error {
+func LoginUser(loginUser models.SigninUser) error {
 	// Call the user repository to save the user in the database
 	ur, err := repositories.NewUserRepository()
 	if err != nil {
 		log.Fatal(err)
 	}
-	err = ur.SaveUser(newUser)
+	fmt.Println("call CheckUser()")
+	err = ur.CheckUser(loginUser)
 	if err != nil {
 		return err
 	}

@@ -17,6 +17,7 @@ func main() {
 	fmt.Println("starting main")
 	http.HandleFunc("/", homePage)
 	http.HandleFunc("/users", handlers.CreateUserHandler)
+	http.HandleFunc("/login", handlers.LoginUserHandler)
 
 	// cors := func(h http.Handler) http.Handler {
 	// 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -40,6 +41,6 @@ func main() {
 	if err != nil {
 		log.Fatal("Server failed to start: ", err)
 	} else {
-		fmt.Println("Server succusesed to start")
+		fmt.Println("Server successed to start")
 	}
 }
