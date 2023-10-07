@@ -1,7 +1,6 @@
 package services
 
 import (
-	"fmt"
 	"log"
 
 	"github.com/RyukiKuwahara/Bio-Map/models"
