@@ -15,7 +15,6 @@ func LoginUser(loginUser models.SigninUser) error {
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println("call CheckUser()")
 	err = ur.CheckUser(loginUser)
 	if err != nil {
 		return err

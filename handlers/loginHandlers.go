@@ -19,7 +19,7 @@ func LoginUserHandler(w http.ResponseWriter, r *http.Request) {
 
 	err = services.LoginUser(loginUser)
 	if err != nil {
-		http.Error(w, "Failed to login user", http.StatusInternalServerError)
+		http.Error(w, "Failed to login user. "+err.Error(), http.StatusInternalServerError)
 		return
 	}
 

@@ -8,9 +8,9 @@ import (
 
 func (ur *UserRepository) CheckUser(user models.SigninUser) error {
 	var count int
-	query := "SELECT (*) FROM user WHERE username = ? AND password = ?"
+	query := "SELECT COUNT(*) FROM users WHERE username = $1 AND password = $2"
 	rows, err := ur.db.Query(query, user.Username, user.Password)
-	fmt.Println(rows, err)
+
 	if err != nil {
 		return err
 	}
@@ -22,11 +22,10 @@ func (ur *UserRepository) CheckUser(user models.SigninUser) error {
 			return err
 		}
 	}
-	fmt.Println(count)
 
 	if count == 1 {
 		return nil
 	} else {
-		return err
+		return fmt.Errorf("user not found or multiple users exist")
 	}
 }
