@@ -58,7 +58,7 @@ func NewUserRepository() (*UserRepository, error) {
 }
 
 // SaveUser saves a user in the database
-func (ur *UserRepository) SaveUser(user models.User) error {
+func (ur *UserRepository) SaveUser(user models.SignupUser) error {
 	maxID, err := ur.GetMaxUserID() // Get the maximum user ID
 	if err != nil {
 		log.Fatal(err)
@@ -69,8 +69,6 @@ func (ur *UserRepository) SaveUser(user models.User) error {
 	if err != nil {
 		log.Fatal(err)
 	}
-
-	log.Println("User saved successfully")
 
 	return nil
 }

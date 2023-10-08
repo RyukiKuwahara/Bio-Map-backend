@@ -12,7 +12,7 @@ import (
 // CreateUserHandler handles the user registration endpoint
 func CreateUserHandler(w http.ResponseWriter, r *http.Request) {
 	// Parse request body
-	var newUser models.User
+	var newUser models.SignupUser
 	err := json.NewDecoder(r.Body).Decode(&newUser)
 	if err != nil {
 		http.Error(w, "Invalid request body", http.StatusBadRequest)
