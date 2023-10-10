@@ -24,8 +24,15 @@ func (ur *UserRepository) CheckUser(user models.SigninUser) (string, error) {
 }
 
 func (ur *UserRepository) RegisterSessionId(sessionId, userId string) error {
-	query := "INSERT INTO session (id, sessionId) VALUES ($1, $2)"
-	_, err := ur.db.Exec(query, userId, sessionId)
+
+	query := "DELETE FROM session WHERE id = $1"
+	_, err := ur.db.Exec(query, userId)
+	if err != nil {
+		return err
+	}
+
+	query = "INSERT INTO session (id, sessionId) VALUES ($1, $2)"
+	_, err = ur.db.Exec(query, userId, sessionId)
 	if err != nil {
 		return err
 	}
