@@ -17,13 +17,13 @@ func LoginUserHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = services.LoginUser(loginUser)
+	session_id, err := services.LoginUser(loginUser)
 	if err != nil {
 		http.Error(w, "Failed to login user. "+err.Error(), http.StatusInternalServerError)
 		return
 	}
 
 	w.WriteHeader(http.StatusCreated)
-	fmt.Fprintf(w, "User login successfully")
+	fmt.Fprintf(w, "{session_id:"+session_id+", message:Success to login user}")
 
 }
