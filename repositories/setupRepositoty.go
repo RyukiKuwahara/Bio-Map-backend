@@ -1,9 +1,11 @@
 package repositories
 
 import (
+	"encoding/csv"
 	"fmt"
 	_ "github.com/lib/pq"
 	"log"
+	"os"
 )
 
 func (ur *UserRepository) TableExits(tableName string) (bool, error) {
@@ -40,10 +42,10 @@ func (ur *UserRepository) CreateUsers() {
 func (ur *UserRepository) CreateSession() {
 	query := `
 	CREATE TABLE session (
-		user_id SERIAL PRIMARY KEY, -- 自動生成の一意のID
-		session_id VARCHAR(32) NOT NULL, -- セッションID（32文字の文字列）
-		-- 他のセッション情報を格納する列を追加できます
-		created_at TIMESTAMP DEFAULT current_timestamp
+		session_id VARCHAR(32) PRIMARY KEY, -- セッションID（32文字の文字列）
+		user_id INT,
+		created_at TIMESTAMP DEFAULT current_timestamp,
+		FOREIGN KEY (user_id) REFERENCES users (user_id)
 		);
 	`
 
@@ -55,29 +57,9 @@ func (ur *UserRepository) CreateSession() {
 	fmt.Println("session テーブルが作成されました")
 }
 
-func (ur *UserRepository) CreatePosts() {
-	query := `
-		CREATE TABLE IF NOT EXISTS posts (
-			post_id SERIAL PRIMARY KEY,
-			user_id INT,
-			species_id INT,
-			image_path VARCHAR(255),
-			explain TEXT,
-			time_stamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-		);
-	`
-
-	_, err := ur.db.Exec(query)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	fmt.Println("posts テーブルが作成されました")
-}
-
 func (ur *UserRepository) CreateGenres() {
 	query := `
-		CREATE TABLE IF NOT EXISTS genres (
+	CREATE TABLE IF NOT EXISTS genres (
 			genre_id SERIAL PRIMARY KEY,
 			genre_name TEXT
 		);
@@ -102,5 +84,70 @@ func (ur *UserRepository) CreateGenres() {
 		log.Fatal(err)
 	}
 
-	fmt.Println("行が追加されました")
+	fmt.Println("genresの行が追加されました")
+}
+
+func (ur *UserRepository) CreateSpecies() {
+	query := `
+		CREATE TABLE IF NOT EXISTS species (
+			species_id SERIAL PRIMARY KEY,
+			species_name TEXT,
+			genre_id INT,
+			FOREIGN KEY (genre_id) REFERENCES genres (genre_id)
+		);
+	`
+
+	_, err := ur.db.Exec(query)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Println("species テーブルが作成されました")
+
+	file, err := os.Open("./setups/species.csv")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer file.Close()
+
+	reader := csv.NewReader(file)
+
+	query = "INSERT INTO species (species_name, genre_id) VALUES ($1, $2);"
+
+	for {
+		record, err := reader.Read()
+		if err != nil {
+			break
+		}
+		species_name := record[0]
+		genre_id := record[1]
+
+		_, err = ur.db.Exec(query, species_name, genre_id)
+		if err != nil {
+			log.Fatal(err)
+		}
+	}
+	fmt.Println("species の行が追加されました")
+}
+
+func (ur *UserRepository) CreatePosts() {
+	query := `
+		CREATE TABLE IF NOT EXISTS posts (
+			post_id SERIAL PRIMARY KEY,
+			user_id INT,
+			species_id INT,
+			image_path VARCHAR(255),
+			explain TEXT,
+			time_stamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+			FOREIGN KEY (user_id) REFERENCES users (user_id),
+			FOREIGN KEY (species_id) REFERENCES species (species_id)
+		);
+	`
+
+	_, err := ur.db.Exec(query)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Println("posts テーブルが作成されました")
 }
