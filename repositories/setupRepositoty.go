@@ -58,7 +58,7 @@ func (ur *UserRepository) CreateSession() {
 func (ur *UserRepository) CreatePosts() {
 	query := `
 		CREATE TABLE IF NOT EXISTS posts (
-			id SERIAL PRIMARY KEY,
+			post_id SERIAL PRIMARY KEY,
 			user_id INT,
 			species_id INT,
 			image_path VARCHAR(255),
@@ -73,4 +73,34 @@ func (ur *UserRepository) CreatePosts() {
 	}
 
 	fmt.Println("posts テーブルが作成されました")
+}
+
+func (ur *UserRepository) CreateGenres() {
+	query := `
+		CREATE TABLE IF NOT EXISTS genres (
+			genre_id SERIAL PRIMARY KEY,
+			genre_name TEXT
+		);
+	`
+
+	_, err := ur.db.Exec(query)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Println("genres テーブルが作成されました")
+
+	query = `
+		INSERT INTO genres (genre_id, genre_name) VALUES
+		(1, '虫'),
+		(2, '魚'),
+		(3, '植物');
+	`
+
+	_, err = ur.db.Exec(query)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Println("行が追加されました")
 }
