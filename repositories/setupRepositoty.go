@@ -136,6 +136,8 @@ func (ur *UserRepository) CreatePosts() {
 			post_id SERIAL PRIMARY KEY,
 			user_id INT,
 			species_id INT,
+			lat DOUBLE PRECISION,
+			lng DOUBLE PRECISION,
 			image_path VARCHAR(255),
 			explain TEXT,
 			time_stamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
