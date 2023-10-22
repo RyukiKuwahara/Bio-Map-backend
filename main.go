@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/RyukiKuwahara/Bio-Map/handlers"
+	"github.com/RyukiKuwahara/Bio-Map/setups"
 )
 
 func homePage(w http.ResponseWriter, r *http.Request) {
@@ -15,6 +16,9 @@ func homePage(w http.ResponseWriter, r *http.Request) {
 
 func main() {
 	fmt.Println("starting main")
+
+	setups.Initialization()
+
 	http.HandleFunc("/", homePage)
 	http.HandleFunc("/users", handlers.CreateUserHandler)
 	http.HandleFunc("/login", handlers.LoginUserHandler)
