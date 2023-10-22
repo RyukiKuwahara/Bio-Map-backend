@@ -3,6 +3,7 @@ package repositories
 import (
 	"fmt"
 	_ "github.com/lib/pq"
+	"log"
 )
 
 func (ur *UserRepository) TableExits(tableName string) (bool, error) {
@@ -16,10 +17,10 @@ func (ur *UserRepository) TableExits(tableName string) (bool, error) {
 	return exists, nil
 }
 
-func (ur *UserRepository) CreateUsers() error {
+func (ur *UserRepository) CreateUsers() {
 	query := `
 		CREATE TABLE IF NOT EXISTS users (
-			id SERIAL PRIMARY KEY,
+			user_id SERIAL PRIMARY KEY,
 			username VARCHAR(255) NOT NULL,
 			email VARCHAR(255) NOT NULL,
 			password VARCHAR(255) NOT NULL,
@@ -30,18 +31,17 @@ func (ur *UserRepository) CreateUsers() error {
 
 	_, err := ur.db.Exec(query)
 	if err != nil {
-		return err
+		log.Fatal(err)
 	}
 
 	fmt.Println("users テーブルが作成されました")
-	return nil
 }
 
-func (ur *UserRepository) CreateSession() error {
+func (ur *UserRepository) CreateSession() {
 	query := `
 	CREATE TABLE session (
-		id SERIAL PRIMARY KEY, -- 自動生成の一意のID
-		sessionId VARCHAR(32) NOT NULL, -- セッションID（32文字の文字列）
+		user_id SERIAL PRIMARY KEY, -- 自動生成の一意のID
+		session_id VARCHAR(32) NOT NULL, -- セッションID（32文字の文字列）
 		-- 他のセッション情報を格納する列を追加できます
 		created_at TIMESTAMP DEFAULT current_timestamp
 		);
@@ -49,9 +49,28 @@ func (ur *UserRepository) CreateSession() error {
 
 	_, err := ur.db.Exec(query)
 	if err != nil {
-		return err
+		log.Fatal(err)
 	}
 
 	fmt.Println("session テーブルが作成されました")
-	return nil
+}
+
+func (ur *UserRepository) CreatePosts() {
+	query := `
+		CREATE TABLE IF NOT EXISTS posts (
+			id SERIAL PRIMARY KEY,
+			user_id INT,
+			species_id INT,
+			image_path VARCHAR(255),
+			explain TEXT,
+			time_stamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+		);
+	`
+
+	_, err := ur.db.Exec(query)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Println("posts テーブルが作成されました")
 }
