@@ -27,4 +27,17 @@ func Initialization() {
 		fmt.Printf("テーブル %s は存在しません。\n", tableName)
 		ur.CreateUsers()
 	}
+
+	tableName = "session"
+	exists, err = ur.TableExits(tableName)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	if exists {
+		fmt.Printf("テーブル %s は存在します。\n", tableName)
+	} else {
+		fmt.Printf("テーブル %s は存在しません。\n", tableName)
+		ur.CreateSession()
+	}
 }
