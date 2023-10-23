@@ -8,7 +8,7 @@ import (
 )
 
 func (ur *UserRepository) CheckUser(user models.SigninUser) (string, error) {
-	query := "SELECT id FROM users WHERE username = $1 AND password = $2"
+	query := "SELECT user_id FROM users WHERE username = $1 AND password = $2"
 	row := ur.db.QueryRow(query, user.Username, user.Password)
 
 	var userId string
@@ -25,13 +25,13 @@ func (ur *UserRepository) CheckUser(user models.SigninUser) (string, error) {
 
 func (ur *UserRepository) RegisterSessionId(sessionId, userId string) error {
 
-	query := "DELETE FROM session WHERE id = $1"
+	query := "DELETE FROM session WHERE user_id = $1"
 	_, err := ur.db.Exec(query, userId)
 	if err != nil {
 		return err
 	}
 
-	query = "INSERT INTO session (id, sessionId) VALUES ($1, $2)"
+	query = "INSERT INTO session (user_id, session_id) VALUES ($1, $2)"
 	_, err = ur.db.Exec(query, userId, sessionId)
 	if err != nil {
 		return err
