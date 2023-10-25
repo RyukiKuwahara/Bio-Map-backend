@@ -2,6 +2,7 @@ package services
 
 import (
 	"context"
+	"encoding/base64"
 	"fmt"
 	"io/ioutil"
 
@@ -47,7 +48,8 @@ func downloadImageFromFirebase(posts []models.Post) ([]models.NewPost, error) {
 		if err != nil {
 			return nil, err
 		}
-		newPost := models.NewPost{SpeciesName: post.SpeciesName, ImageData: data, Explain: post.Explain, Lat: post.Lat, Lng: post.Lng}
+		base64Data := base64.StdEncoding.EncodeToString(data)
+		newPost := models.NewPost{PostId: post.PostId, SpeciesName: post.SpeciesName, ImageData: base64Data, Explain: post.Explain, Lat: post.Lat, Lng: post.Lng}
 		newPosts = append(newPosts, newPost)
 	}
 	return newPosts, nil

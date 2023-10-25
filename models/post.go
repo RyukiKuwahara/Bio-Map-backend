@@ -1,6 +1,7 @@
 package models
 
 type Post struct {
+	PostId      int
 	SpeciesName string
 	ImagePath   string
 	Explain     string
@@ -9,8 +10,9 @@ type Post struct {
 }
 
 type NewPost struct {
+	PostId      int
 	SpeciesName string
-	ImageData   []byte
+	ImageData   string
 	Explain     string
 	Lat         float64
 	Lng         float64

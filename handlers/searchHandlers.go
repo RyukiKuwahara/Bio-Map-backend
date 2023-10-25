@@ -28,7 +28,7 @@ func SearchHandler(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusCreated)
 	fmt.Fprintf(w, "[")
 	for i, newPost := range newPosts {
-		fmt.Fprintf(w, "{\"name\": %s, \"image_data\":%x, \"explain\":%s, \"lat\":%f, \"lng\":%f}", newPost.SpeciesName, newPost.ImageData, newPost.Explain, newPost.Lat, newPost.Lng)
+		fmt.Fprintf(w, "{\"post_id\": %d, \"name\": \"%s\", \"image_data\":\"%s\", \"explain\":\"%s\", \"lat\":%f, \"lng\":%f}", newPost.PostId, newPost.SpeciesName, newPost.ImageData, newPost.Explain, newPost.Lat, newPost.Lng)
 		if i < len(newPosts)-1 {
 			fmt.Fprintf(w, ", ")
 		}

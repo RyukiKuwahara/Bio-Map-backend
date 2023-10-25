@@ -7,7 +7,7 @@ import (
 
 func (ur *UserRepository) GetPosts(name string) ([]models.Post, error) {
 	query := `
-        SELECT species.species_name, posts.image_path, posts.explain, posts.lat, posts.lng
+        SELECT posts.post_id, species.species_name, posts.image_path, posts.explain, posts.lat, posts.lng
         FROM posts
         INNER JOIN species ON posts.species_id = species.species_id
         WHERE species.species_name = $1
@@ -24,6 +24,7 @@ func (ur *UserRepository) GetPosts(name string) ([]models.Post, error) {
 		var post models.Post
 
 		err := rows.Scan(
+			&post.PostId,
 			&post.SpeciesName,
 			&post.ImagePath,
 			&post.Explain,
