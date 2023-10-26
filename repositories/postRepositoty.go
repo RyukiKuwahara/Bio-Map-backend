@@ -9,6 +9,7 @@ import (
 )
 
 func (ur *UserRepository) GetUserId(session_id string) (int, error) {
+	fmt.Println(session_id)
 	query := "SELECT user_id FROM session WHERE session_id = $1"
 	row := ur.db.QueryRow(query, session_id)
 
@@ -16,7 +17,7 @@ func (ur *UserRepository) GetUserId(session_id string) (int, error) {
 	err := row.Scan(&userId)
 	if err != nil {
 		if err == sql.ErrNoRows {
-			return -1, fmt.Errorf("user not found")
+			return -1, fmt.Errorf("session not found")
 		}
 		return -1, err
 	}
@@ -41,7 +42,7 @@ func (ur *UserRepository) GetSpeciesId(name string) (int, error) {
 }
 
 func (ur *UserRepository) RegisterPost(pr models.PostRequest, userId, speciesId int, imagePath string) error {
-	query := "INSERT INTO session (user_id, species_id, lat, lng, image_path, explain) VALUES ($1, $2, $3, $4, $5, $6)"
+	query := "INSERT INTO posts (user_id, species_id, lat, lng, image_path, explain) VALUES ($1, $2, $3, $4, $5, $6)"
 	_, err := ur.db.Exec(query, userId, speciesId, pr.Lat, pr.Lng, imagePath, pr.Explain)
 	if err != nil {
 		return err

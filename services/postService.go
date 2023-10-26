@@ -19,6 +19,8 @@ func createImagePath(userId, speciesId int, pr models.PostRequest) string {
 }
 
 func uploadImageToFirebase(base64Image, remoteFilename string) error {
+
+	base64Image = "data:image/jpg;base64," + base64Image
 	config := &firebase.Config{
 		StorageBucket: "bio-map-storage.appspot.com",
 	}
@@ -39,7 +41,7 @@ func uploadImageToFirebase(base64Image, remoteFilename string) error {
 		return err
 	}
 
-	contentType := "image/png"
+	contentType := "image/jpg"
 
 	decodedData, err := base64.StdEncoding.DecodeString(strings.Split(base64Image, ",")[1])
 	if err != nil {
@@ -78,15 +80,19 @@ func Post(postRequest models.PostRequest) error {
 	}
 	userId, err := ur.GetUserId(postRequest.SessionId)
 	if err != nil {
+		fmt.Println("GetUserId err")
 		return err
 	}
 	speciesId, err := ur.GetSpeciesId(postRequest.SpeciesName)
 	if err != nil {
+		fmt.Println("GetSpeciesId err")
+
 		return err
 	}
 	imagePath := createImagePath(userId, speciesId, postRequest)
 	err = ur.RegisterPost(postRequest, userId, speciesId, imagePath)
 	if err != nil {
+		fmt.Println("RegisterPost err")
 		return err
 	}
 
