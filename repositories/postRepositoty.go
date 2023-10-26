@@ -37,7 +37,6 @@ func (ur *UserRepository) GetSpeciesId(name string) (int, error) {
 		}
 		return -1, err
 	}
-
 	return speciesId, nil
 }
 
@@ -47,6 +46,5 @@ func (ur *UserRepository) RegisterPost(pr models.PostRequest, userId, speciesId 
 	if err != nil {
 		return err
 	}
-
 	return nil
 }
