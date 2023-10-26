@@ -21,3 +21,12 @@ type NewPost struct {
 type SearchRequest struct {
 	Name string
 }
+
+type PostRequest struct {
+	SessionId   string
+	SpeciesName string
+	ImageData   string
+	Explain     string
+	Lat         float64
+	Lng         float64
+}
