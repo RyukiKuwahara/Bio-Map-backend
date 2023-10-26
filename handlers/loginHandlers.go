@@ -24,6 +24,6 @@ func LoginUserHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusCreated)
-	fmt.Fprintf(w, "{session_id:"+session_id+", message:Success to login user}")
+	fmt.Fprintf(w, "{\"session_id\": \"%s\", \"message\": \"Success to login user\"}", session_id)
 
 }
