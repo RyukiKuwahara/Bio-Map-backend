@@ -3,6 +3,7 @@ package repositories
 import (
 	"database/sql"
 	"fmt"
+
 	"github.com/RyukiKuwahara/Bio-Map/models"
 	_ "github.com/lib/pq" // PostgreSQL driver
 )
