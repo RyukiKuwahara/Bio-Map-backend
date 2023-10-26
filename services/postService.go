@@ -15,12 +15,11 @@ import (
 
 func createImagePath(userId, speciesId int, pr models.PostRequest) string {
 
-	return fmt.Sprintf("user_id:%d_species_id:%d_lat:%f_lng:%f", userId, speciesId, pr.Lat, pr.Lng)
+	return fmt.Sprintf("user_id:%d_species_id:%d_lat:%f_lng:%f.jpg", userId, speciesId, pr.Lat, pr.Lng)
 }
 
 func uploadImageToFirebase(base64Image, remoteFilename string) error {
 
-	base64Image = "data:image/jpg;base64," + base64Image
 	config := &firebase.Config{
 		StorageBucket: "bio-map-storage.appspot.com",
 	}
@@ -41,7 +40,7 @@ func uploadImageToFirebase(base64Image, remoteFilename string) error {
 		return err
 	}
 
-	contentType := "image/jpg"
+	contentType := "image/jpeg"
 
 	decodedData, err := base64.StdEncoding.DecodeString(strings.Split(base64Image, ",")[1])
 	if err != nil {
