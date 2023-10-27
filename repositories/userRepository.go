@@ -2,6 +2,8 @@ package repositories
 
 import (
 	"database/sql"
+	"errors"
+	"fmt"
 	"log"
 	"os"
 
@@ -28,25 +30,23 @@ func NewUserRepository() (*UserRepository, error) {
 	host := os.Getenv("DB_HOST")
 	port := os.Getenv("DB_PORT")
 
-	// Establish a database connection
 	db, err := sql.Open("postgres", "host="+host+" port="+port+" user="+dbUser+" password="+password+" dbname="+dbName)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	// UserRepository objectを生成して返す
 	return &UserRepository{
 		db: db,
 	}, nil
 }
 
-// SaveUser saves a user in the database
 func (ur *UserRepository) SaveUser(user models.SignupUser) error {
 
 	query := "INSERT INTO users (username, email, password) VALUES ($1, $2, $3)"
 	_, err := ur.db.Exec(query, user.Username, user.Email, user.Password)
 	if err != nil {
-		log.Fatal(err)
+		fmt.Println("ユーザ名もしくは，メールアドレスが他のユーザと重複している可能性があります．")
+		return errors.New("ユーザ名もしくは，メールアドレスが他のユーザと重複している可能性があります．")
 	}
 
 	return nil

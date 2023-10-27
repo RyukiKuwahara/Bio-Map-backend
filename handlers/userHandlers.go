@@ -9,9 +9,7 @@ import (
 	"github.com/RyukiKuwahara/Bio-Map/services"
 )
 
-// CreateUserHandler handles the user registration endpoint
 func CreateUserHandler(w http.ResponseWriter, r *http.Request) {
-	// Parse request body
 	var newUser models.SignupUser
 	err := json.NewDecoder(r.Body).Decode(&newUser)
 	if err != nil {
@@ -19,10 +17,9 @@ func CreateUserHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Call user service to create user
 	err = services.CreateUser(newUser)
 	if err != nil {
-		http.Error(w, "Failed to create user", http.StatusInternalServerError)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
