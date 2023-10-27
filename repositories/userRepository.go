@@ -15,23 +15,6 @@ type UserRepository struct {
 	db *sql.DB
 }
 
-// GetMaxUserID returns the maximum user ID from the database
-func (ur *UserRepository) GetMaxUserID() (int, error) {
-	var maxID int
-	query := "SELECT MAX(id) FROM users"
-
-	err := ur.db.QueryRow(query).Scan(&maxID)
-	if err != nil {
-		// If there are no users in the database, return 0 as the maximum ID
-		if err == sql.ErrNoRows {
-			return 0, nil
-		}
-		return 0, err
-	}
-
-	return maxID, nil
-}
-
 // NewUserRepository creates a new UserRepository instance
 func NewUserRepository() (*UserRepository, error) {
 	err := godotenv.Load(".env")
@@ -58,19 +41,13 @@ func NewUserRepository() (*UserRepository, error) {
 }
 
 // SaveUser saves a user in the database
-func (ur *UserRepository) SaveUser(user models.User) error {
-	maxID, err := ur.GetMaxUserID() // Get the maximum user ID
+func (ur *UserRepository) SaveUser(user models.SignupUser) error {
+
+	query := "INSERT INTO users (username, email, password) VALUES ($1, $2, $3)"
+	_, err := ur.db.Exec(query, user.Username, user.Email, user.Password)
 	if err != nil {
 		log.Fatal(err)
 	}
-
-	query := "INSERT INTO users (id, username, email, password) VALUES ($1, $2, $3, $4)"
-	_, err = ur.db.Exec(query, maxID+1, user.Username, user.Email, user.Password)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	log.Println("User saved successfully")
 
 	return nil
 }

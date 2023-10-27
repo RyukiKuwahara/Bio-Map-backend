@@ -8,7 +8,7 @@ import (
 )
 
 // CreateUser creates a new user
-func CreateUser(newUser models.User) error {
+func CreateUser(newUser models.SignupUser) error {
 	// Call the user repository to save the user in the database
 	ur, err := repositories.NewUserRepository()
 	if err != nil {
