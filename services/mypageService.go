@@ -19,18 +19,22 @@ func GetNameAndPosts(sessionId string) (string, []models.NewPost, error) {
 		return "", nil, err
 	}
 	name, err := ur.GetName(userId)
+
 	if err != nil {
+		fmt.Println("GetName err")
 		return "", nil, err
 	}
 
 	posts, err := ur.GetUserPosts(userId)
 	if err != nil {
+		fmt.Println("GetUsePosts err")
 		return "", nil, err
 	}
 	fmt.Println(posts)
 
 	newPosts, err := downloadImageFromFirebase(posts)
 	if err != nil {
+		fmt.Println("downloadImage err")
 		return "", nil, err
 	}
 
