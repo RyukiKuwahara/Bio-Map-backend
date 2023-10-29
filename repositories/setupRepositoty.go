@@ -3,9 +3,10 @@ package repositories
 import (
 	"encoding/csv"
 	"fmt"
-	_ "github.com/lib/pq"
 	"log"
 	"os"
+
+	_ "github.com/lib/pq"
 )
 
 func (ur *UserRepository) TableExits(tableName string) (bool, error) {
@@ -152,4 +153,57 @@ func (ur *UserRepository) CreatePosts() {
 	}
 
 	fmt.Println("posts テーブルが作成されました")
+}
+
+func (ur *UserRepository) CreateBadges() {
+	query := `
+		CREATE TABLE badges (
+			badge_id SERIAL PRIMARY KEY,
+			badge_path TEXT NOT NULL
+		);	
+	`
+
+	_, err := ur.db.Exec(query)
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println("badges テーブルが作成されました")
+
+	query = `
+		INSERT INTO badges (badge_path) VALUES
+		('badges/insect_beginner.jpg'),
+		('badges/insect_expert.jpg'),
+		('badges/insect_master.jpg'),
+		('badges/plant_beginner.jpg'),
+		('badges/plant_expert.jpg'),
+		('badges/plant_grand_master.jpg'),
+		('badges/fish_beginner.jpg'),
+		('badges/fish_expert.jpg'),
+		('badges/fish_master.jpg');
+	`
+
+	_, err = ur.db.Exec(query)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Println("badgesの行が追加されました")
+}
+
+func (ur *UserRepository) CreateUserBadgeHistory() {
+	query := `
+		CREATE TABLE user_badge_history (
+			user_badge_history_id SERIAL PRIMARY KEY,
+			user_id INT REFERENCES users(user_id),
+			badge_id INT REFERENCES badges(badge_id),
+			time_stamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+		);
+	`
+
+	_, err := ur.db.Exec(query)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Println("user_badge_history テーブルが作成されました")
 }
