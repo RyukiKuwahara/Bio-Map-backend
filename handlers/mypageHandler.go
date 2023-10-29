@@ -20,7 +20,7 @@ func MypageHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	name, posts, err := services.GetNameAndPosts(data.SessionId)
+	name, posts, badgesData, err := services.GetUserInfo(data.SessionId)
 	if err != nil {
 		http.Error(w, "Failed :  "+err.Error(), http.StatusInternalServerError)
 		return
@@ -34,6 +34,15 @@ func MypageHandler(w http.ResponseWriter, r *http.Request) {
 			fmt.Fprintf(w, ", ")
 		}
 	}
+	fmt.Fprintf(w, "], \"badges\": [")
+	for i, badgeData := range badgesData {
+		fmt.Println(badgeData)
+		fmt.Fprintf(w, "{\"image_data\": \"%s\"}", badgeData)
+		if i < len(badgesData)-1 {
+			fmt.Fprintf(w, ", ")
+		}
+	}
+
 	fmt.Fprintf(w, "]}")
 
 }

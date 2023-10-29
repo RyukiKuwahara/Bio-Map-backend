@@ -57,3 +57,38 @@ func (ur *UserRepository) GetUserPosts(userId int) ([]models.Post, error) {
 
 	return posts, nil
 }
+
+func (ur *UserRepository) GetBadges(userId int) ([]string, error) {
+	query := `
+        SELECT badge_path
+        FROM user_badge_history
+        INNER JOIN badges ON user_badge_history.badge_id = badges.badge_id
+        WHERE user_badge_history.user_id = $1
+    `
+	rows, err := ur.db.Query(query, userId)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var badgesPath []string
+
+	for rows.Next() {
+		var badgePath string
+
+		err := rows.Scan(
+			&badgePath,
+		)
+		if err != nil {
+			return nil, err
+		}
+
+		badgesPath = append(badgesPath, badgePath)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return badgesPath, nil
+}
