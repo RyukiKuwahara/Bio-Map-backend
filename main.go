@@ -24,6 +24,7 @@ func main() {
 	http.HandleFunc("/login", handlers.LoginUserHandler)
 	http.HandleFunc("/search", handlers.SearchHandler)
 	http.HandleFunc("/post", handlers.PostHandler)
+	http.HandleFunc("/mypage", handlers.MypageHandler)
 
 	cors := func(h http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
