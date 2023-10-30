@@ -1,5 +1,4 @@
-<img src="./img/top.png">
-![](./img/top.png)
+<img src="./imgs/top.png">
 
 # サービスのURL
 
@@ -19,6 +18,5 @@
 - Firebase
 
 # インフラ構成図
-<img src="./img/infrastructure.png">
-![](./img/infrastructure.png)
+<img src="./imgs/infrastructure.png">
 
