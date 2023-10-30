@@ -34,7 +34,7 @@ func (ur *UserRepository) GetSpeciesId(name string) (int, error) {
 	err := row.Scan(&speciesId)
 	if err != nil {
 		if err == sql.ErrNoRows {
-			return -1, fmt.Errorf("species_name not found")
+			return -1, fmt.Errorf("登録された名前はデータベースに存在しません")
 		}
 		return -1, err
 	}

@@ -19,7 +19,7 @@ func PostHandler(w http.ResponseWriter, r *http.Request) {
 
 	err = services.Post(postRequest)
 	if err != nil {
-		http.Error(w, "Failed to post. "+err.Error(), http.StatusInternalServerError)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
