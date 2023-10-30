@@ -17,7 +17,7 @@ import (
 func createImagePath(userId, speciesId int, pr models.PostRequest) string {
 	currentTime := time.Now()
 	dateStr := currentTime.Format("2006-01-02")
-	return fmt.Sprintf("user_id:%d_species_id:%d_lat:%f_lng:%f_date:%s.jpg", userId, speciesId, pr.Lat, pr.Lng, dateStr)
+	return fmt.Sprintf("posts/user_id:%d_species_id:%d_lat:%f_lng:%f_date:%s.jpg", userId, speciesId, pr.Lat, pr.Lng, dateStr)
 }
 
 func uploadImageToFirebase(base64Image, remoteFilename string) error {
@@ -50,7 +50,7 @@ func uploadImageToFirebase(base64Image, remoteFilename string) error {
 	}
 
 	ctx := context.Background()
-	writer := bucket.Object("posts/" + remoteFilename).NewWriter(ctx)
+	writer := bucket.Object(remoteFilename).NewWriter(ctx)
 	writer.ObjectAttrs.ContentType = contentType
 	writer.ObjectAttrs.CacheControl = "no-cache"
 	writer.ObjectAttrs.ACL = []storage.ACLRule{
