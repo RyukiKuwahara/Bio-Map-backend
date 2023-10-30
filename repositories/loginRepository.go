@@ -16,7 +16,7 @@ func (ur *UserRepository) CheckUser(user models.SigninUser) (string, error) {
 	err := row.Scan(&userId)
 	if err != nil {
 		if err == sql.ErrNoRows {
-			return "", fmt.Errorf("user not found")
+			return "", fmt.Errorf("ユーザ名，もしくはパスワードが間違っています．")
 		}
 		return "", err
 	}

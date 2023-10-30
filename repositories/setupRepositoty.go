@@ -173,13 +173,13 @@ func (ur *UserRepository) CreateBadges() {
 		INSERT INTO badges (badge_path) VALUES
 		('badges/insect_beginner.jpg'),
 		('badges/insect_expert.jpg'),
-		('badges/insect_master.jpg'),
+		('badges/insect_grand_master.jpg'),
 		('badges/plant_beginner.jpg'),
 		('badges/plant_expert.jpg'),
 		('badges/plant_grand_master.jpg'),
 		('badges/fish_beginner.jpg'),
 		('badges/fish_expert.jpg'),
-		('badges/fish_master.jpg');
+		('badges/fish_grand_master.jpg');
 	`
 
 	_, err = ur.db.Exec(query)
