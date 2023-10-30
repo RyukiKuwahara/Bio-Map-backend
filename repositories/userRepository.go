@@ -9,15 +9,13 @@ import (
 
 	"github.com/RyukiKuwahara/Bio-Map/models"
 	"github.com/joho/godotenv"
-	_ "github.com/lib/pq" // PostgreSQL driver
+	_ "github.com/lib/pq"
 )
 
-// UserRepository handles user data operations
 type UserRepository struct {
 	db *sql.DB
 }
 
-// NewUserRepository creates a new UserRepository instance
 func NewUserRepository() (*UserRepository, error) {
 	err := godotenv.Load(".env")
 	if err != nil {

@@ -3,7 +3,6 @@ package services
 import (
 	"context"
 	"encoding/base64"
-	"fmt"
 	"io/ioutil"
 
 	firebase "firebase.google.com/go"
@@ -65,7 +64,6 @@ func GetPosts(name string) ([]models.NewPost, error) {
 	if err != nil {
 		return nil, err
 	}
-	fmt.Println(posts)
 
 	newPosts, err := downloadImageFromFirebase(posts)
 	if err != nil {
