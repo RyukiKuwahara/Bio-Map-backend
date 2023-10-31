@@ -1,6 +1,6 @@
 <img src="./imgs/top.png">
 
-# サービスのURL
+# サービスのURL（β版）
 https://bio-map-frontend.vercel.app/
 
 # サービスへの想い
