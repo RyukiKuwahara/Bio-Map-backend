@@ -10,12 +10,12 @@ type Post struct {
 }
 
 type NewPost struct {
-	PostId      int
-	SpeciesName string
-	ImageData   string
-	Explain     string
-	Lat         float64
-	Lng         float64
+	PostId      int     `json:"id"`
+	SpeciesName string  `json:"name"`
+	ImageData   string  `json:"image_data"`
+	Explain     string  `json:"explain"`
+	Lat         float64 `json:"lat"`
+	Lng         float64 `json:"lng"`
 }
 
 type SearchRequest struct {

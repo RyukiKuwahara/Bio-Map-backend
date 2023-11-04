@@ -12,7 +12,7 @@ import (
 	"google.golang.org/api/option"
 )
 
-func downloadBadgeFromFirebase(badgesPath []string) ([]string, error) {
+func downloadBadgeFromFirebase(badgesPath []string) ([]models.Badge, error) {
 	config := &firebase.Config{
 		StorageBucket: "bio-map-storage.appspot.com",
 	}
@@ -33,7 +33,7 @@ func downloadBadgeFromFirebase(badgesPath []string) ([]string, error) {
 	}
 
 	ctx := context.Background()
-	var badgesData []string
+	var badgesData []models.Badge
 	for _, badgePath := range badgesPath {
 		rc, err := bucket.Object(badgePath).NewReader(ctx)
 		if err != nil {
@@ -45,13 +45,14 @@ func downloadBadgeFromFirebase(badgesPath []string) ([]string, error) {
 		if err != nil {
 			return nil, err
 		}
-		badgeData := base64.StdEncoding.EncodeToString(data)
+		base64Img := base64.StdEncoding.EncodeToString(data)
+		badgeData := models.Badge{ImageData: base64Img}
 		badgesData = append(badgesData, badgeData)
 	}
 	return badgesData, nil
 }
 
-func GetUserInfo(sessionId string) (string, []models.NewPost, []string, error) {
+func GetUserInfo(sessionId string) (string, []models.NewPost, []models.Badge, error) {
 
 	ur, err := repositories.NewUserRepository()
 	if err != nil {
