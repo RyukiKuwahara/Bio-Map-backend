@@ -10,7 +10,7 @@ type Post struct {
 }
 
 type NewPost struct {
-	PostId      int     `json:"id"`
+	PostId      int     `json:"post_id"`
 	SpeciesName string  `json:"name"`
 	ImageData   string  `json:"image_data"`
 	Explain     string  `json:"explain"`
