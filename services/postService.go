@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"image"
 	"image/jpeg"
+	"math"
 	"strings"
 	"time"
 
@@ -48,7 +49,7 @@ func uploadImageToFirebase(base64Image, remoteFilename string) error {
 
 	contentType := "image/jpeg"
 
-	decodedData, err := base64.StdEncoding.DecodeString(strings.Split(base64Image, ",")[1])
+	decodedData, err := base64.StdEncoding.DecodeString(base64Image)
 	if err != nil {
 		return err
 	}
@@ -78,6 +79,12 @@ func uploadImageToFirebase(base64Image, remoteFilename string) error {
 }
 
 func resizeImage(base64Image string) (string, error) {
+	parts := strings.Split(base64Image, ";base64,")
+	if len(parts) != 2 {
+		return "", fmt.Errorf("Invalid data")
+	}
+	base64Image = parts[1]
+
 	decoded, err := base64.StdEncoding.DecodeString(base64Image)
 	if err != nil {
 		return "", err
@@ -91,9 +98,8 @@ func resizeImage(base64Image string) (string, error) {
 	currentWidth := img.Bounds().Dx()
 	currentHeight := img.Bounds().Dy()
 	totalPixels := currentWidth * currentHeight
-	fmt.Println("totalPixels", totalPixels)
-	maxTotalPixels := 640000 // 800 x 800 px程度
-	percent := float64(maxTotalPixels) / float64(totalPixels)
+	maxTotalPixels := 40000 // 200 x 200 px程度
+	percent := math.Sqrt(float64(maxTotalPixels) / float64(totalPixels))
 
 	var newWidth, newHeight int
 
@@ -116,6 +122,10 @@ func resizeImage(base64Image string) (string, error) {
 	base64ResizedImage := base64.StdEncoding.EncodeToString(buf.Bytes())
 
 	return base64ResizedImage, nil
+}
+
+func NewError(s string) {
+	panic("unimplemented")
 }
 
 func Post(postRequest models.PostRequest) error {
