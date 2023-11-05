@@ -1,9 +1,13 @@
 package services
 
 import (
+	"bytes"
 	"context"
 	"encoding/base64"
 	"fmt"
+	"image"
+	"image/jpeg"
+	"math"
 	"strings"
 	"time"
 
@@ -11,6 +15,7 @@ import (
 	firebase "firebase.google.com/go"
 	"github.com/RyukiKuwahara/Bio-Map/models"
 	"github.com/RyukiKuwahara/Bio-Map/repositories"
+	"github.com/nfnt/resize"
 	"google.golang.org/api/option"
 )
 
@@ -44,7 +49,7 @@ func uploadImageToFirebase(base64Image, remoteFilename string) error {
 
 	contentType := "image/jpeg"
 
-	decodedData, err := base64.StdEncoding.DecodeString(strings.Split(base64Image, ",")[1])
+	decodedData, err := base64.StdEncoding.DecodeString(base64Image)
 	if err != nil {
 		return err
 	}
@@ -73,6 +78,56 @@ func uploadImageToFirebase(base64Image, remoteFilename string) error {
 	return nil
 }
 
+func resizeImage(base64Image string) (string, error) {
+	parts := strings.Split(base64Image, ";base64,")
+	if len(parts) != 2 {
+		return "", fmt.Errorf("Invalid data")
+	}
+	base64Image = parts[1]
+
+	decoded, err := base64.StdEncoding.DecodeString(base64Image)
+	if err != nil {
+		return "", err
+	}
+
+	img, _, err := image.Decode(bytes.NewReader(decoded))
+	if err != nil {
+		return "", err
+	}
+
+	currentWidth := img.Bounds().Dx()
+	currentHeight := img.Bounds().Dy()
+	totalPixels := currentWidth * currentHeight
+	maxTotalPixels := 40000 // 200 x 200 px程度
+	percent := math.Sqrt(float64(maxTotalPixels) / float64(totalPixels))
+
+	var newWidth, newHeight int
+
+	if totalPixels <= maxTotalPixels {
+		newWidth = currentWidth
+		newHeight = currentHeight
+	} else {
+		newWidth = int(float64(currentWidth) * percent)
+		newHeight = int(float64(currentHeight) * percent)
+	}
+
+	resizedImage := resize.Resize(uint(newWidth), uint(newHeight), img, resize.Lanczos3)
+
+	var buf bytes.Buffer
+	err = jpeg.Encode(&buf, resizedImage, nil)
+	if err != nil {
+		return "", err
+	}
+
+	base64ResizedImage := base64.StdEncoding.EncodeToString(buf.Bytes())
+
+	return base64ResizedImage, nil
+}
+
+func NewError(s string) {
+	panic("unimplemented")
+}
+
 func Post(postRequest models.PostRequest) error {
 	ur, err := repositories.NewUserRepository()
 	if err != nil {
@@ -96,7 +151,13 @@ func Post(postRequest models.PostRequest) error {
 		return err
 	}
 
-	err = uploadImageToFirebase(postRequest.ImageData, imagePath)
+	resizedImage, err := resizeImage(postRequest.ImageData)
+	if err != nil {
+		fmt.Println("resizeImage err")
+		return err
+	}
+
+	err = uploadImageToFirebase(resizedImage, imagePath)
 	if err != nil {
 		return err
 	}
