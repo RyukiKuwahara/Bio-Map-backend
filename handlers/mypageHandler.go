@@ -13,7 +13,7 @@ import (
 
 func MypageHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("mypage")
-	var data models.MypageRequest
+	var data models.SessionData
 	err := json.NewDecoder(r.Body).Decode(&data)
 	if err != nil {
 		http.Error(w, "Invalid request body", http.StatusBadRequest)

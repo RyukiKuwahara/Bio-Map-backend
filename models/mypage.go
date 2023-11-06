@@ -1,6 +1,6 @@
 package models
 
-type MypageRequest struct {
+type SessionData struct {
 	SessionId string
 }
 

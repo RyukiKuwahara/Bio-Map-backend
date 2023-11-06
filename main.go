@@ -30,6 +30,7 @@ func main() {
 	http.HandleFunc("/", homePage)
 	http.HandleFunc("/users", handlers.CreateUserHandler)
 	http.HandleFunc("/login", handlers.LoginUserHandler)
+	http.HandleFunc("/logout", handlers.LogoutUserHandler)
 	http.HandleFunc("/search", handlers.SearchHandler)
 	http.HandleFunc("/post", handlers.PostHandler)
 	http.HandleFunc("/mypage", handlers.MypageHandler)
