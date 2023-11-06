@@ -98,7 +98,7 @@ func resizeImage(base64Image string) (string, error) {
 	currentWidth := img.Bounds().Dx()
 	currentHeight := img.Bounds().Dy()
 	totalPixels := currentWidth * currentHeight
-	maxTotalPixels := 40000 // 200 x 200 px程度
+	maxTotalPixels := 90000 // 300 x 300 px程度
 	percent := math.Sqrt(float64(maxTotalPixels) / float64(totalPixels))
 
 	var newWidth, newHeight int
