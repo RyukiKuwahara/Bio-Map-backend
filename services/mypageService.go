@@ -12,7 +12,7 @@ import (
 	"google.golang.org/api/option"
 )
 
-func downloadBadgeFromFirebase(badgesPath []string) ([]models.Badge, error) {
+func downloadBadgeFromFirebase(badgesPath []string) ([]string, error) {
 	config := &firebase.Config{
 		StorageBucket: "bio-map-storage.appspot.com",
 	}
@@ -33,7 +33,7 @@ func downloadBadgeFromFirebase(badgesPath []string) ([]models.Badge, error) {
 	}
 
 	ctx := context.Background()
-	var badgesData []models.Badge
+	var badgesData []string
 	for _, badgePath := range badgesPath {
 		rc, err := bucket.Object(badgePath).NewReader(ctx)
 		if err != nil {
@@ -46,13 +46,12 @@ func downloadBadgeFromFirebase(badgesPath []string) ([]models.Badge, error) {
 			return nil, err
 		}
 		base64Img := base64.StdEncoding.EncodeToString(data)
-		badgeData := models.Badge{ImageData: base64Img}
-		badgesData = append(badgesData, badgeData)
+		badgesData = append(badgesData, base64Img)
 	}
 	return badgesData, nil
 }
 
-func GetUserInfo(sessionId string) (string, []models.NewPost, []models.Badge, error) {
+func GetUserInfo(sessionId string) (string, []models.NewPost, []models.BadgeInfo, error) {
 
 	ur, err := repositories.NewUserRepository()
 	if err != nil {
@@ -76,7 +75,7 @@ func GetUserInfo(sessionId string) (string, []models.NewPost, []models.Badge, er
 		return "", nil, nil, err
 	}
 
-	badgesPath, err := ur.GetBadges(userId)
+	badgesId, badgesPath, err := ur.GetBadges(userId)
 	if err != nil {
 		fmt.Println("GetBadges err")
 		return "", nil, nil, err
@@ -88,10 +87,16 @@ func GetUserInfo(sessionId string) (string, []models.NewPost, []models.Badge, er
 		return "", nil, nil, err
 	}
 
-	badgesData, err := downloadBadgeFromFirebase(badgesPath)
+	badgesImg, err := downloadBadgeFromFirebase(badgesPath)
 	if err != nil {
 		fmt.Println("downloadImage err")
 		return "", nil, nil, err
+	}
+
+	var badgesData []models.BadgeInfo
+	for i := 0; i < len(badgesId); i++ {
+		badgeData := models.BadgeInfo{BadgeId: badgesId[i], ImageData: badgesImg[i]}
+		badgesData = append(badgesData, badgeData)
 	}
 
 	return name, newPosts, badgesData, err
