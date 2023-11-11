@@ -65,7 +65,7 @@ func (ur *UserRepository) CountOverlapping(userId, speciesId int) (int, error) {
 
 func (ur *UserRepository) GetGenreId(speciesId int) (int, error) {
 
-	query := `SELECT genre_id FROM species WHERE speciesId = $1`
+	query := `SELECT genre_id FROM species WHERE species_id = $1`
 	row := ur.db.QueryRow(query, speciesId)
 
 	var genreId int
@@ -78,7 +78,11 @@ func (ur *UserRepository) GetGenreId(speciesId int) (int, error) {
 
 func (ur *UserRepository) CountPosts(userId, genreId int) (int, error) {
 
-	query := `SELECT COUNT(DISTINCT user_id, genre_id) FROM posts WHERE userId = $1 and speciesId = $2`
+	query := `
+		SELECT COUNT(DISTINCT posts.species_id) FROM posts
+		INNER JOIN species ON posts.species_id = species.species_id
+		WHERE user_id = $1 and genre_id = $2
+	`
 	row := ur.db.QueryRow(query, userId, genreId)
 
 	var count int

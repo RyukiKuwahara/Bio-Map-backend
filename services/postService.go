@@ -131,7 +131,7 @@ func checkBadgeCondition(ur *repositories.UserRepository, userId, speciesId int)
 		return err
 	}
 
-	if overlappingCount == 0 {
+	if overlappingCount > 0 {
 		return nil
 	}
 
