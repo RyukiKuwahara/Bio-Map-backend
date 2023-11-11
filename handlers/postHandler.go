@@ -17,13 +17,13 @@ func PostHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = services.Post(postRequest)
+	badgeImg, err := services.Post(postRequest)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
 	w.WriteHeader(http.StatusCreated)
-	fmt.Fprintf(w, "post successfully")
+	fmt.Fprintf(w, "{\"badge_img\": \"%s\", \"message\": \"Success to post\"}", badgeImg)
 
 }

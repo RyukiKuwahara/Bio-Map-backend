@@ -101,3 +101,16 @@ func (ur *UserRepository) RegisterBadge(userId, badgeId int) error {
 	}
 	return nil
 }
+
+func (ur *UserRepository) GetBadgesPath(badgeId int) (string, error) {
+
+	query := `SELECT badge_path FROM badge WHERE badge_id = $1`
+	row := ur.db.QueryRow(query, badgeId)
+
+	var badgePath string
+	err := row.Scan(&badgePath)
+	if err != nil {
+		return "", err
+	}
+	return badgePath, nil
+}
