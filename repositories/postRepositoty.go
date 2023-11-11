@@ -49,3 +49,51 @@ func (ur *UserRepository) RegisterPost(pr models.PostRequest, userId, speciesId 
 	}
 	return nil
 }
+
+func (ur *UserRepository) CountOverlapping(userId, speciesId int) (int, error) {
+
+	query := `SELECT COUNT(user_id) FROM posts WHERE user_id = $1 and species_id = $2`
+	row := ur.db.QueryRow(query, userId, speciesId)
+
+	var count int
+	err := row.Scan(&count)
+	if err != nil {
+		return -1, err
+	}
+	return count, nil
+}
+
+func (ur *UserRepository) GetGenreId(speciesId int) (int, error) {
+
+	query := `SELECT genre_id FROM species WHERE speciesId = $1`
+	row := ur.db.QueryRow(query, speciesId)
+
+	var genreId int
+	err := row.Scan(&genreId)
+	if err != nil {
+		return -1, err
+	}
+	return genreId, nil
+}
+
+func (ur *UserRepository) CountPosts(userId, genreId int) (int, error) {
+
+	query := `SELECT COUNT(DISTINCT user_id, genre_id) FROM posts WHERE userId = $1 and speciesId = $2`
+	row := ur.db.QueryRow(query, userId, genreId)
+
+	var count int
+	err := row.Scan(&count)
+	if err != nil {
+		return -1, err
+	}
+	return count, nil
+}
+
+func (ur *UserRepository) RegisterBadge(userId, badgeId int) error {
+	query := "INSERT INTO user_badge_history (user_id, badge_id) VALUES ($1, $2)"
+	_, err := ur.db.Exec(query, userId, badgeId)
+	if err != nil {
+		return err
+	}
+	return nil
+}
