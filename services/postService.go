@@ -124,43 +124,116 @@ func resizeImage(base64Image string) (string, error) {
 	return base64ResizedImage, nil
 }
 
-func NewError(s string) {
-	panic("unimplemented")
+func checkBadgeCondition(ur *repositories.UserRepository, userId, speciesId int) (string, error) {
+
+	overlappingCount, err := ur.CountOverlapping(userId, speciesId)
+	if err != nil {
+		return "", err
+	}
+
+	if overlappingCount > 0 {
+		return "", nil
+	}
+
+	genreId, err := ur.GetGenreId(speciesId)
+	if err != nil {
+		return "", err
+	}
+
+	genreCount, err := ur.CountPosts(userId, genreId)
+	if err != nil {
+		return "", err
+	}
+
+	badgeId := -1
+	if genreId == 1 {
+		if genreCount == 9 {
+			badgeId = 1
+		} else if genreCount == 29 {
+			badgeId = 2
+		} else if genreCount == 99 {
+			badgeId = 3
+		}
+	} else if genreId == 2 {
+		if genreCount == 9 {
+			badgeId = 4
+		} else if genreCount == 29 {
+			badgeId = 5
+		} else if genreCount == 99 {
+			badgeId = 6
+		}
+	} else {
+		if genreCount == 9 {
+			badgeId = 7
+		} else if genreCount == 29 {
+			badgeId = 8
+		} else if genreCount == 99 {
+			badgeId = 9
+		}
+	}
+	if badgeId == -1 {
+		return "", nil
+	}
+
+	badgePath, err := ur.GetBadgesPath(badgeId)
+	if err != nil {
+		return "", err
+	}
+
+	badgeImage, err := downloadBadgeFromFirebase([]string{badgePath})
+	if err != nil {
+		return "", err
+	}
+
+	err = ur.RegisterBadge(userId, badgeId)
+	if err != nil {
+		return "", err
+	}
+	fmt.Printf("user_id:%dがbadge_id:%dを獲得しました.\n", userId, badgeId)
+
+	return badgeImage[0], nil
 }
 
-func Post(postRequest models.PostRequest) error {
+func Post(postRequest models.PostRequest) (string, error) {
 	ur, err := repositories.NewUserRepository()
 	if err != nil {
-		return err
+		return "", err
 	}
 	userId, err := ur.GetUserId(postRequest.SessionId)
 	if err != nil {
 		fmt.Println("GetUserId err")
-		return err
+		return "", err
 	}
 	speciesId, err := ur.GetSpeciesId(postRequest.SpeciesName)
 	if err != nil {
 		fmt.Println("GetSpeciesId err")
 
-		return err
+		return "", err
 	}
 	imagePath := createImagePath(userId, speciesId, postRequest)
+
+	badgeImg, err := checkBadgeCondition(ur, userId, speciesId)
+	if err != nil {
+		fmt.Println("chekcBadgeCondition err")
+		return "", err
+	}
+
 	err = ur.RegisterPost(postRequest, userId, speciesId, imagePath)
 	if err != nil {
 		fmt.Println("RegisterPost err")
-		return err
+		return "", err
 	}
 
 	resizedImage, err := resizeImage(postRequest.ImageData)
 	if err != nil {
 		fmt.Println("resizeImage err")
-		return err
+		return "", err
 	}
 
 	err = uploadImageToFirebase(resizedImage, imagePath)
 	if err != nil {
-		return err
+		return "", err
 	}
 
-	return nil
+	return badgeImg, nil
 }
